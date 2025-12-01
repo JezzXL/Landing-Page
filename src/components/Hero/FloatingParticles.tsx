@@ -6,10 +6,12 @@ interface Particle {
   opacity: number
   duration: number
   delay: number
+  color: string
 }
 
-// Gera as partículas fora do componente (executado apenas uma vez)
 const generateParticles = (): Particle[] => {
+  const colors = ['bg-blue-500', 'bg-cyan-500', 'bg-blue-400', 'bg-cyan-400']
+  
   return Array.from({ length: 30 }, () => ({
     width: Math.random() * 4 + 2,
     height: Math.random() * 4 + 2,
@@ -18,10 +20,10 @@ const generateParticles = (): Particle[] => {
     opacity: Math.random() * 0.5 + 0.2,
     duration: Math.random() * 10 + 10,
     delay: Math.random() * 5,
+    color: colors[Math.floor(Math.random() * colors.length)],
   }))
 }
 
-// Partículas geradas uma única vez quando o módulo é carregado
 const PARTICLES = generateParticles()
 
 export default function FloatingParticles() {
@@ -30,7 +32,7 @@ export default function FloatingParticles() {
       {PARTICLES.map((particle, i) => (
         <div
           key={i}
-          className="absolute rounded-full bg-purple-500"
+          className={`absolute rounded-full ${particle.color}`}
           style={{
             width: `${particle.width}px`,
             height: `${particle.height}px`,
