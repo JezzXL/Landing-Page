@@ -3,13 +3,13 @@ import StatCard from './Stats/StatCard'
 
 export default function Stats() {
   const stats = [
-    { value: 'R$ 2.5Bi+', label: 'Investido', icon: TrendingUp },
-    { value: '45+', label: 'Projetos Entregues', icon: Building2 },
-    { value: '250%', label: 'ROI Médio', icon: Award },
+    { value: 'R$ 2.5Bi+', label: 'Em Obras Ativas', icon: TrendingUp },
+    { value: '45+', label: 'Empreendimentos', icon: Building2 },
+    { value: '250%', label: 'Valorização Média', icon: Award },
   ]
 
   return (
-    <div className="relative py-20 bg-gradient-to-b from-black to-purple-950/20">
+    <div className="relative py-20 bg-linear-to-b from-slate-900 to-blue-950/20">
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {stats.map((stat, i) => (
