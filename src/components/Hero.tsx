@@ -13,7 +13,6 @@ export default function Hero({ scrollY }: HeroProps) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // Usa requestAnimationFrame para evitar setState síncrono
     const timer = requestAnimationFrame(() => {
       setMounted(true)
     })
@@ -23,11 +22,23 @@ export default function Hero({ scrollY }: HeroProps) {
 
   return (
     <div className="relative h-screen overflow-hidden">
-      {/* Background com gradiente */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black via-purple-950 to-black">
+      {/* Background com gradiente azul/cyan (tema construção) */}
+      <div className="absolute inset-0 bg-linear-to-br from-slate-900 via-blue-950 to-slate-900">
         <Grid3D scrollY={scrollY} />
         <FloatingParticles />
         <Building3D scrollY={scrollY} />
+        
+        {/* Blueprint pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-5"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(59, 130, 246, 0.3) 2px, rgba(59, 130, 246, 0.3) 4px),
+              repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(59, 130, 246, 0.3) 2px, rgba(59, 130, 246, 0.3) 4px)
+            `,
+            backgroundSize: '40px 40px',
+          }}
+        />
       </div>
 
       {/* Conteúdo principal */}
@@ -35,7 +46,7 @@ export default function Hero({ scrollY }: HeroProps) {
 
       {/* Scroll indicator */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
-        <ChevronDown className="w-8 h-8 text-purple-400" />
+        <ChevronDown className="w-8 h-8 text-blue-400" />
       </div>
 
       {/* Estilos inline para animações */}
