@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense, lazy } from 'react'
 import { ChevronDown } from 'lucide-react'
 import Grid3D from './Hero/Grid3D'
 import FloatingParticles from './Hero/FloatingParticles'
-import Building3D from './Hero/Building3D'
 import HeroContent from './Hero/HeroContent'
+
+// Lazy load do Scene3D para melhor performance
+const Scene3D = lazy(() => import('./Hero/Scene3D'))
 
 interface HeroProps {
   scrollY: number
@@ -26,7 +28,11 @@ export default function Hero({ scrollY }: HeroProps) {
       <div className="absolute inset-0 bg-linear-to-br from-slate-900 via-blue-950 to-slate-900">
         <Grid3D scrollY={scrollY} />
         <FloatingParticles />
-        <Building3D scrollY={scrollY} />
+        
+        {/* Scene 3D com Three.js */}
+        <Suspense fallback={null}>
+          <Scene3D />
+        </Suspense>
         
         {/* Blueprint pattern overlay */}
         <div 
