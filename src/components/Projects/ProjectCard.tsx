@@ -1,5 +1,8 @@
 import { MapPin, Home } from 'lucide-react'
+import { Suspense, lazy, useState } from 'react'
 import ProgressBar from './ProgressBar'
+
+const Project3DScene = lazy(() => import('./Project3DScene'))
 
 interface ProjectCardProps {
   name: string
@@ -24,15 +27,29 @@ export default function ProjectCard({
   type,
   units
 }: ProjectCardProps) {
+  const [show3D, setShow3D] = useState(false)
+
   return (
-    <div className="group relative bg-linear-to-br from-blue-900/10 to-transparent border border-blue-500/20 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-300 hover:scale-105">
-      {/* Image placeholder with emoji */}
+    <div 
+      className="group relative bg-linear-to-br from-blue-900/10 to-transparent border border-blue-500/20 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all duration-300 hover:scale-105"
+      onMouseEnter={() => setShow3D(true)}
+      onMouseLeave={() => setShow3D(false)}
+    >
+      {/* Image placeholder with 3D scene on hover */}
       <div className="relative h-64 bg-linear-to-br from-blue-900/30 to-cyan-900/30 flex items-center justify-center text-8xl">
-        {image}
+        {show3D ? (
+          <Suspense fallback={<div>{image}</div>}>
+            <div className="absolute inset-0">
+              <Project3DScene />
+            </div>
+          </Suspense>
+        ) : (
+          image
+        )}
         <div className="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition-colors" />
         
         {/* Type badge */}
-        <div className="absolute top-4 right-4 px-3 py-1 bg-cyan-500/80 backdrop-blur-sm rounded-full text-xs font-bold text-white">
+        <div className="absolute top-4 right-4 px-3 py-1 bg-cyan-500/80 backdrop-blur-sm rounded-full text-xs font-bold text-white z-10">
           {type}
         </div>
       </div>
