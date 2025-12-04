@@ -29,8 +29,12 @@ export default function Hero({ scrollY }: HeroProps) {
         <Grid3D scrollY={scrollY} />
         <FloatingParticles />
         
-        {/* Scene 3D com Three.js */}
-        <Suspense fallback={null}>
+        {/* Cidade 3D com Three.js */}
+        <Suspense fallback={
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-blue-400 text-lg animate-pulse">Carregando cidade 3D...</div>
+          </div>
+        }>
           <Scene3D />
         </Suspense>
         
@@ -45,6 +49,9 @@ export default function Hero({ scrollY }: HeroProps) {
             backgroundSize: '40px 40px',
           }}
         />
+
+        {/* Vignette effect */}
+        <div className="absolute inset-0 bg-gradient-radial from-transparent via-transparent to-slate-900/50" />
       </div>
 
       {/* Conteúdo principal */}
