@@ -156,7 +156,7 @@ export default function HouseScene({ scrollProgress }: HouseSceneProps) {
 
       {/* Indicador de cômodo atual */}
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
-        <div className="bg-gradient-to-r from-blue-600/90 to-cyan-600/90 backdrop-blur-xl px-8 py-3 rounded-full border border-cyan-400/30 shadow-2xl">
+        <div className="bg-linear-to-r from-blue-600/90 to-cyan-600/90 backdrop-blur-xl px-8 py-3 rounded-full border border-cyan-400/30 shadow-2xl">
           <span className="text-white font-bold text-lg">{currentRoom}</span>
         </div>
       </div>
