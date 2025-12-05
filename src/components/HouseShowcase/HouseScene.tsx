@@ -8,7 +8,7 @@ interface HouseSceneProps {
 }
 
 export default function HouseScene({ scrollProgress }: HouseSceneProps) {
-  // Tour pelos cômodos - câmera se move entre ambientes
+  // Tour pelos cômodos - CORRIGIDO com nomes reais
   const cameraPositions = [
     // 1. Sala de Estar - Entrada
     { 
@@ -21,7 +21,7 @@ export default function HouseScene({ scrollProgress }: HouseSceneProps) {
     { 
       x: -3, y: 2, z: 1, 
       lookAt: [-2, 1, -1],
-      name: 'Cozinha'
+      name: 'Cozinha Gourmet'
     },
     
     // 3. Área de Jantar - Ao lado da cozinha
@@ -31,28 +31,28 @@ export default function HouseScene({ scrollProgress }: HouseSceneProps) {
       name: 'Área de Jantar'
     },
     
-    // 4. Corredor/Hall - Transição
+    // 4. Hall - Transição
     { 
       x: 1, y: 2, z: 3.5, 
       lookAt: [3.1, 1.5, 3.8],
       name: 'Hall'
     },
     
-    // 5. Suíte Master - Movimento para direita
+    // 5. Escritório - Movimento para direita
     { 
       x: 4, y: 2, z: 1, 
       lookAt: [6, 0.3, -1.7],
-      name: 'Escritório'
+      name: 'Escritório / Home Office'
     },
     
-    // 6. Banheiro Suíte - Dentro do quarto
+    // 6. Banheiro - Dentro do quarto
     { 
       x: 8.9, y: 2, z: 1.7, 
       lookAt: [2, 0, -5],
       name: 'Banheiro'
     },
     
-    // 7. Varanda - Saída externa
+    // 7. Suíte Master - Final
     { 
       x: 14, y: 2, z: 1.6, 
       lookAt: [6, -1, -3],
@@ -154,9 +154,9 @@ export default function HouseScene({ scrollProgress }: HouseSceneProps) {
         </Suspense>
       </Canvas>
 
-      {/* Indicador de cômodo atual */}
+      {/* Indicador de cômodo atual - CORRIGIDO */}
       <div className="absolute top-8 left-1/2 transform -translate-x-1/2 z-20">
-        <div className="bg-linear-to-r from-blue-600/90 to-cyan-600/90 backdrop-blur-xl px-8 py-3 rounded-full border border-cyan-400/30 shadow-2xl">
+        <div className="bg-gradient-to-r from-blue-600/90 to-cyan-600/90 backdrop-blur-xl px-8 py-3 rounded-full border border-cyan-400/30 shadow-2xl">
           <span className="text-white font-bold text-lg">{currentRoom}</span>
         </div>
       </div>
