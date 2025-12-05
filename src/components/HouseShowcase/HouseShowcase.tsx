@@ -1,32 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import HouseScene from './HouseScene'
 
 export default function HouseShowcase() {
   const [scrollProgress, setScrollProgress] = useState(0)
+  const [currentRoom, setCurrentRoom] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!containerRef.current) return
-
-      const container = containerRef.current
-      const scrollTop = window.scrollY - container.offsetTop
-      const scrollHeight = container.scrollHeight - window.innerHeight
-
-      if (scrollTop < 0) {
-        setScrollProgress(0)
-      } else if (scrollTop > scrollHeight) {
-        setScrollProgress(1)
-      } else {
-        setScrollProgress(scrollTop / scrollHeight)
-      }
-    }
-
-    window.addEventListener('scroll', handleScroll)
-    handleScroll()
-
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
 
   // Configuração de cada card com distância personalizada
   const cardsConfig = [
@@ -35,8 +14,8 @@ export default function HouseShowcase() {
       description: "Amplo ambiente integrado com pé-direito duplo e iluminação natural abundante",
       features: ['42m²', 'Ar condicionado', 'Home theater'],
       position: "left" as const,
-      spacing: 0, // Altura antes do card aparecer (em vh)
-      height: 0, // Altura do card (em vh)
+      spacing: 0,
+      height: 0,
     },
     {
       title: "Cozinha Gourmet",
@@ -88,10 +67,135 @@ export default function HouseShowcase() {
     },
   ]
 
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current) return
+
+      const container = containerRef.current
+      const scrollTop = window.scrollY - container.offsetTop
+      const scrollHeight = container.scrollHeight - window.innerHeight
+
+      if (scrollTop < 0) {
+        setScrollProgress(0)
+        setCurrentRoom(0)
+      } else if (scrollTop > scrollHeight) {
+        setScrollProgress(1)
+        setCurrentRoom(cardsConfig.length - 1)
+      } else {
+        const progress = scrollTop / scrollHeight
+        setScrollProgress(progress)
+        
+        // Calcular cômodo atual baseado no progress
+        const roomIndex = Math.floor(progress * cardsConfig.length)
+        setCurrentRoom(Math.min(roomIndex, cardsConfig.length - 1))
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll()
+
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [cardsConfig.length])
+
+  // Navegar para o próximo cômodo
+  const goToNextRoom = () => {
+    if (currentRoom < cardsConfig.length - 1) {
+      goToRoom(currentRoom + 1)
+    }
+  }
+
+  // Navegar para o cômodo anterior
+  const goToPreviousRoom = () => {
+    if (currentRoom > 0) {
+      goToRoom(currentRoom - 1)
+    }
+  }
+
+  // Navegar para um cômodo específico
+  const goToRoom = (roomIndex: number) => {
+    if (!containerRef.current) return
+
+    const container = containerRef.current
+    const scrollHeight = container.scrollHeight - window.innerHeight
+    const targetProgress = roomIndex / (cardsConfig.length - 1)
+    const targetScroll = container.offsetTop + (scrollHeight * targetProgress)
+
+    window.scrollTo({
+      top: targetScroll,
+      behavior: 'smooth'
+    })
+  }
+
   return (
     <div ref={containerRef} className="relative bg-slate-900">
       {/* Seção 3D (sticky) */}
       <HouseScene scrollProgress={scrollProgress} />
+
+      {/* Botões de Navegação - Direita Inferior */}
+      <div className="fixed bottom-32 right-8 z-30 flex flex-col gap-4">
+        {/* Botão Anterior */}
+        <button
+          onClick={goToPreviousRoom}
+          disabled={currentRoom === 0}
+          className={`group p-4 rounded-full backdrop-blur-xl border transition-all duration-300 ${
+            currentRoom === 0
+              ? 'bg-gray-800/50 border-gray-700/30 cursor-not-allowed opacity-50'
+              : 'bg-blue-600/80 border-cyan-400/30 hover:bg-blue-500 hover:scale-110 hover:shadow-2xl hover:shadow-blue-500/50'
+          }`}
+          aria-label="Cômodo anterior"
+        >
+          <ChevronLeft className="w-6 h-6 text-white" />
+        </button>
+
+        {/* Indicador de posição */}
+        <div className="bg-slate-900/90 backdrop-blur-xl px-4 py-2 rounded-full border border-cyan-400/30 text-center">
+          <div className="text-white font-bold text-sm">
+            {currentRoom + 1} / {cardsConfig.length}
+          </div>
+          <div className="text-cyan-400 text-xs mt-1 truncate max-w-[120px]">
+            {cardsConfig[currentRoom].title}
+          </div>
+        </div>
+
+        {/* Botão Próximo */}
+        <button
+          onClick={goToNextRoom}
+          disabled={currentRoom === cardsConfig.length - 1}
+          className={`group p-4 rounded-full backdrop-blur-xl border transition-all duration-300 ${
+            currentRoom === cardsConfig.length - 1
+              ? 'bg-gray-800/50 border-gray-700/30 cursor-not-allowed opacity-50'
+              : 'bg-blue-600/80 border-cyan-400/30 hover:bg-blue-500 hover:scale-110 hover:shadow-2xl hover:shadow-blue-500/50'
+          }`}
+          aria-label="Próximo cômodo"
+        >
+          <ChevronRight className="w-6 h-6 text-white" />
+        </button>
+      </div>
+
+      {/* Navegação Rápida - Pontos Laterais Esquerda */}
+      <div className="fixed left-8 top-1/2 transform -translate-y-1/2 z-30 flex flex-col gap-3">
+        {cardsConfig.map((card, index) => (
+          <button
+            key={index}
+            onClick={() => goToRoom(index)}
+            className={`group relative w-3 h-3 rounded-full transition-all duration-300 ${
+              index === currentRoom
+                ? 'bg-cyan-400 scale-150 shadow-lg shadow-cyan-400/50'
+                : index < currentRoom
+                ? 'bg-blue-600 hover:scale-125'
+                : 'bg-white/30 hover:bg-white/50 hover:scale-125'
+            }`}
+            aria-label={`Ir para ${card.title}`}
+          >
+            {/* Tooltip */}
+            <div className="absolute left-6 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
+              <div className="bg-slate-900/95 backdrop-blur-xl px-3 py-2 rounded-lg border border-cyan-400/30 shadow-xl">
+                <span className="text-white text-sm font-medium">{card.title}</span>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
 
       {/* Conteúdo com informações */}
       <div className="relative z-10 pointer-events-none">
